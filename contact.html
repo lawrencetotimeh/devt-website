@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — DEVT</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42 Z" stroke="#c9a15a" stroke-width="4" stroke-linejoin="round"/></svg>
+      <span class="brand-text"><span class="word">DEVT</span><span class="tag">Ducor Institute</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="contact.html" class="active">Contact</a>
+      <a href="admissions.html" class="nav-cta">Enroll Now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap"><h1>Contact DEVT</h1><p>Reach us directly, or visit us in Clara Town</p></div>
+</section>
+
+<section>
+  <div class="wrap content-narrow">
+    <div class="form-box">
+      <table class="contact-table">
+        <tr><td>Address</td><td>Clara Town, Old Basketball Court, Main Road, Bushrod Island, Monrovia, Liberia</td></tr>
+        <tr><td>Phone (primary)</td><td><a href="tel:+231770005482">+231 77 000 5482</a></td></tr>
+        <tr><td>Phone (secondary)</td><td><a href="tel:+231886107494">+231 88 610 7494</a></td></tr>
+        <tr><td>Email</td><td><a href="mailto:info@devtlib.org">info@devtlib.org</a> <span style="color:#8a8371; font-size:0.85rem;">(pending Zoho Mail setup once domain is registered)</span></td></tr>
+        <tr><td>Social</td><td><span style="color:#8a8371;">Placeholder &mdash; Facebook/LinkedIn handles not yet confirmed</span></td></tr>
+      </table>
+    </div>
+    <div class="placeholder-note">Map embed pending final address confirmation — will use the address above once DEVT confirms it's launch-ready to display publicly.</div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>DEVT</h4><p style="color:#9aa4bd; max-width:320px;">Ducor Institute of Vocational and Technical Development — a registered non-profit training institution in Clara Town, Bushrod Island, Monrovia, Liberia.</p></div>
+      <div><h4>Site</h4><a href="about.html">About</a><a href="programs.html">Programs</a><a href="admissions.html">Admissions</a><a href="contact.html">Contact</a></div>
+      <div><h4>Contact</h4><a href="tel:+231770005482">+231 77 000 5482</a><a href="contact.html">Clara Town, Old Basketball Court, Main Road, Bushrod Island</a></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Ducor Institute of Vocational and Technical Development (DEVT). All rights reserved.</div>
+  </div>
+</footer>
+<script>
+document.addEventListener('click', function(e){ if (!e.target.closest('.main-nav') && !e.target.closest('.menu-toggle')) { document.querySelector('.main-nav').classList.remove('open'); } });
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — DEVT</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42 Z" stroke="#c9a15a" stroke-width="4" stroke-linejoin="round"/></svg>
+      <span class="brand-text"><span class="word">DEVT</span><span class="tag">Ducor Institute</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html" class="active">Admissions</a>
+      <a href="contact.html">Contact</a>
+      <a href="admissions.html" class="nav-cta">Enroll Now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap"><h1>Application Form</h1><p>Takes a few minutes. Works fine on a phone.</p></div>
+</section>
+
+<section>
+  <div class="wrap content-narrow">
+
+    <form id="regForm" class="form-box">
+      <label for="firstName">First name</label>
+      <input type="text" id="firstName" required>
+
+      <label for="lastName">Last name</label>
+      <input type="text" id="lastName" required>
+
+      <label for="phone">Phone number</label>
+      <input type="tel" id="phone" placeholder="e.g. 0770 000 000" required>
+
+      <label for="email">Email (optional)</label>
+      <input type="email" id="email" placeholder="you@example.com">
+      <div class="field-help">If you give an email, we'll send your reference code there too — but it will also show right here on the screen either way.</div>
+
+      <label for="program">Program you're most interested in</label>
+      <select id="program" required>
+        <option value="">Select a program&hellip;</option>
+        <option>Computer Science &amp; Office Productivity</option>
+        <option>Light Duty Driving &amp; Spare Parts</option>
+        <option>Cosmetology &amp; Beauty Therapy</option>
+        <option>Event Decorations</option>
+        <option>Pastry / Catering / Baking / Cake Making</option>
+        <option>Advanced Cake Making</option>
+        <option>Tailoring &amp; Fashion Design</option>
+        <option>General Plumbing</option>
+        <option>Residential Electricity</option>
+        <option>Air Conditioning &amp; Refrigeration</option>
+        <option>Satellite &amp; CCTV Installation</option>
+        <option>Bead Making</option>
+        <option>Soap Science</option>
+        <option>Organizational &amp; Ethical Leadership</option>
+      </select>
+
+      <label for="notes">Anything else we should know? (optional)</label>
+      <textarea id="notes" rows="3"></textarea>
+
+      <button type="submit" class="btn btn-gold" style="margin-top:22px; border:none; cursor:pointer;" id="submitBtn">Submit Application</button>
+    </form>
+
+    <div id="successBox" class="status-result" style="text-align:center;">
+      <p style="font-weight:700; color:#14213d; font-size:1.1rem;">Application received!</p>
+      <p>Your reference code is:</p>
+      <p style="font-family:Georgia, serif; font-size:1.8rem; color:#14213d; letter-spacing:0.04em; margin:8px 0 16px;" id="refCodeDisplay"></p>
+      <p class="field-help">Write this down or take a screenshot. You'll use it on the "Check Your Status" page to see how your application is progressing.</p>
+      <a href="status.html" class="btn btn-outline" style="color:#14213d; border-color:#14213d; margin-top:14px;">Go to Status Check &rarr;</a>
+    </div>
+
+    <div id="errorMsg" style="display:none; margin-top:16px; color:#a33; font-size:0.9rem;"></div>
+
+    <div class="placeholder-note" style="margin-top:20px;">Build note: this form needs to be connected to DEVT's registration Sheet via a small script (Google Apps Script). See the Registrar &amp; Mohamed Guide, Step 4, for the one-time setup.</div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>DEVT</h4><p style="color:#9aa4bd; max-width:320px;">Ducor Institute of Vocational and Technical Development — a registered non-profit training institution in Clara Town, Bushrod Island, Monrovia, Liberia.</p></div>
+      <div><h4>Site</h4><a href="about.html">About</a><a href="programs.html">Programs</a><a href="admissions.html">Admissions</a><a href="contact.html">Contact</a></div>
+      <div><h4>Contact</h4><a href="tel:+231770005482">+231 77 000 5482</a><a href="contact.html">Clara Town, Old Basketball Court, Main Road, Bushrod Island</a></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Ducor Institute of Vocational and Technical Development (DEVT). All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('click', function(e){ if (!e.target.closest('.main-nav') && !e.target.closest('.menu-toggle')) { document.querySelector('.main-nav').classList.remove('open'); } });
+
+// REPLACE THIS with the deployed Apps Script Web App URL (see Registrar & Mohamed Guide, Step 4).
+// This is the SAME script/URL used on status.html.
+const REGISTER_ENDPOINT = "https://script.google.com/macros/s/REPLACE-WITH-DEPLOYED-SCRIPT-ID/exec";
+
+document.getElementById('regForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('errorMsg');
+  errorBox.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const payload = {
+    action: 'register',
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName: document.getElementById('lastName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    program: document.getElementById('program').value,
+    notes: document.getElementById('notes').value.trim()
+  };
+
+  try {
+    const res = await fetch(REGISTER_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight against Apps Script
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('refCodeDisplay').textContent = data.referenceCode;
+      document.getElementById('regForm').style.display = 'none';
+      document.getElementById('successBox').classList.add('show');
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch (err) {
+    errorBox.textContent = "Something went wrong submitting your application. Please try again in a moment, or contact us directly.";
+    errorBox.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+  }
+});
+</script>
+</body>
+</html>

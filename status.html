@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check Your Application Status — DEVT</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42 Z" stroke="#c9a15a" stroke-width="4" stroke-linejoin="round"/></svg>
+      <span class="brand-text"><span class="word">DEVT</span><span class="tag">Ducor Institute</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="contact.html">Contact</a>
+      <a href="admissions.html" class="nav-cta">Enroll Now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap"><h1>Check Your Application Status</h1><p>Enter the reference code you received when you applied</p></div>
+</section>
+
+<section>
+  <div class="wrap content-narrow">
+    <div class="form-box">
+      <form id="statusForm">
+        <label for="refCode">Reference code</label>
+        <input type="text" id="refCode" placeholder="e.g. DEVT-4821" required>
+        <div class="field-help">This was shown on your screen and emailed to you (if you gave an email) right after you submitted your application.</div>
+
+        <label for="lastName">Last name</label>
+        <input type="text" id="lastName" placeholder="Your last name, as you wrote it on the form" required>
+
+        <button type="submit" class="btn btn-gold" style="margin-top:22px; border:none; cursor:pointer;">Check Status</button>
+      </form>
+
+      <div id="result" class="status-result">
+        <p><span id="statusPill" class="status-pill">&nbsp;</span></p>
+        <p id="statusMessage" style="margin-top:10px; margin-bottom:0;"></p>
+      </div>
+      <div id="errorMsg" style="display:none; margin-top:16px; color:#a33; font-size:0.9rem;"></div>
+    </div>
+
+    <div class="placeholder-note" style="margin-top:20px;">Build note: this page calls a small script (Google Apps Script) that reads DEVT's registration Google Sheet. It needs to be connected to that script's web address once it's deployed — see the Registrar &amp; Mohamed Guide, Step 4, for how that URL gets plugged in below.</div>
+
+    <p style="margin-top:18px;">Can't find your code, or applied a while ago and haven't heard back? <a href="contact.html" style="color:#14213d; font-weight:600;">Contact us directly</a>.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>DEVT</h4><p style="color:#9aa4bd; max-width:320px;">Ducor Institute of Vocational and Technical Development — a registered non-profit training institution in Clara Town, Bushrod Island, Monrovia, Liberia.</p></div>
+      <div><h4>Site</h4><a href="about.html">About</a><a href="programs.html">Programs</a><a href="admissions.html">Admissions</a><a href="contact.html">Contact</a></div>
+      <div><h4>Contact</h4><a href="tel:+231770005482">+231 77 000 5482</a><a href="contact.html">Clara Town, Old Basketball Court, Main Road, Bushrod Island</a></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Ducor Institute of Vocational and Technical Development (DEVT). All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('click', function(e){ if (!e.target.closest('.main-nav') && !e.target.closest('.menu-toggle')) { document.querySelector('.main-nav').classList.remove('open'); } });
+
+// REPLACE THIS with the deployed Apps Script Web App URL (see Registrar & Mohamed Guide, Step 4).
+const STATUS_ENDPOINT = "https://script.google.com/macros/s/REPLACE-WITH-DEPLOYED-SCRIPT-ID/exec";
+
+document.getElementById('statusForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const refCode = document.getElementById('refCode').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const resultBox = document.getElementById('result');
+  const errorBox = document.getElementById('errorMsg');
+  resultBox.classList.remove('show');
+  errorBox.style.display = 'none';
+
+  try {
+    const url = STATUS_ENDPOINT + "?code=" + encodeURIComponent(refCode) + "&lastName=" + encodeURIComponent(lastName);
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.found) {
+      document.getElementById('statusPill').textContent = data.status;
+      document.getElementById('statusMessage').textContent = data.message || '';
+      resultBox.classList.add('show');
+    } else {
+      errorBox.textContent = "We couldn't find an application matching that code and last name. Double-check both and try again, or contact us.";
+      errorBox.style.display = 'block';
+    }
+  } catch (err) {
+    errorBox.textContent = "Something went wrong checking your status. Please try again in a moment, or contact us directly.";
+    errorBox.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

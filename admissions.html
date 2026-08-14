@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admissions — DEVT</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42 Z" stroke="#c9a15a" stroke-width="4" stroke-linejoin="round"/></svg>
+      <span class="brand-text"><span class="word">DEVT</span><span class="tag">Ducor Institute</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html" class="active">Admissions</a>
+      <a href="contact.html">Contact</a>
+      <a href="admissions.html" class="nav-cta">Enroll Now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap"><h1>Admissions</h1><p>How to apply, step by step</p></div>
+</section>
+
+<section>
+  <div class="wrap content-narrow">
+
+    <h2>Who can apply</h2>
+    <div class="placeholder-note">Placeholder — exact eligibility requirements (age, education level, documents needed) not yet confirmed with Mohamed. Update before publishing.</div>
+
+    <h2 style="margin-top:36px;">Cost</h2>
+    <div class="placeholder-note">Placeholder — cost/fee wording is sensitive and needs to be confirmed exactly with Mohamed before this goes live. Do not publish a number without his sign-off.</div>
+
+    <h2 style="margin-top:36px;">How registration works</h2>
+    <ul class="steps">
+      <li>
+        <h3>Fill out the application form</h3>
+        <p>Tell us your name, contact info, and which program(s) you're interested in. It takes a few minutes and works fine on a phone.</p>
+      </li>
+      <li>
+        <h3>Get your reference code</h3>
+        <p>As soon as you submit, you'll get a short reference code on the screen — write it down or take a screenshot. If you gave an email, we'll also send it there.</p>
+      </li>
+      <li>
+        <h3>DEVT reviews your application</h3>
+        <p>Our registrar reviews applications and updates your status as it moves along.</p>
+      </li>
+      <li>
+        <h3>Check your status anytime</h3>
+        <p>Come back to this site and use your reference code to see exactly where your application stands — no password needed.</p>
+      </li>
+      <li>
+        <h3>Get enrolled</h3>
+        <p>Once accepted, we'll help you get set up with your student account and show you how to access your classes.</p>
+      </li>
+    </ul>
+
+    <div style="text-align:center; margin-top:40px; padding:30px; background:#f2ede2; border-radius:8px;">
+      <p style="margin-bottom:18px; font-weight:600;">Ready to apply?</p>
+      <a href="#" id="applyLink" class="btn btn-gold">Start the Application Form &rarr;</a>
+      <p class="field-help" style="margin-top:10px;">Opens DEVT's registration form in a new page.</p>
+      <p style="margin-top:22px;"><a href="status.html" style="color:#14213d; font-weight:600;">Already applied? Check your status &rarr;</a></p>
+    </div>
+
+    <div class="placeholder-note" style="margin-top:24px;">Build note: the application form is built into the site itself (register.html) — it just needs to be connected to DEVT's registration Sheet via the small script described in the Registrar &amp; Mohamed Guide, Step 4, before it can actually save applications.</div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>DEVT</h4><p style="color:#9aa4bd; max-width:320px;">Ducor Institute of Vocational and Technical Development — a registered non-profit training institution in Clara Town, Bushrod Island, Monrovia, Liberia.</p></div>
+      <div><h4>Site</h4><a href="about.html">About</a><a href="programs.html">Programs</a><a href="admissions.html">Admissions</a><a href="contact.html">Contact</a></div>
+      <div><h4>Contact</h4><a href="tel:+231770005482">+231 77 000 5482</a><a href="contact.html">Clara Town, Old Basketball Court, Main Road, Bushrod Island</a></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Ducor Institute of Vocational and Technical Development (DEVT). All rights reserved.</div>
+  </div>
+</footer>
+<script>
+document.addEventListener('click', function(e){ if (!e.target.closest('.main-nav') && !e.target.closest('.menu-toggle')) { document.querySelector('.main-nav').classList.remove('open'); } });
+
+document.getElementById('applyLink').href = "register.html";
+</script>
+</body>
+</html>

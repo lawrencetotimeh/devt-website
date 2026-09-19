@@ -14,22 +14,54 @@
  *                  status.html. Looks up their reference code + last
  *                  name in the Sheet and returns their current status.
  *
- * SETUP: see the Registrar & Mohamed Guide, Step 4, for exactly how to
- * install and deploy this. In short: open the DEVT Registration Tracker
- * Sheet -> Extensions -> Apps Script -> paste this file in -> Deploy as
- * a Web App ("Anyone" access) -> copy the resulting URL into
- * register.html and status.html where marked REPLACE-WITH-DEPLOYED-SCRIPT-ID.
+ * PAYMENT TRACKING: every new application also gets Fee Amount, Amount
+ * Paid, Balance Remaining, Payment Status, Last Payment Date, and Receipt
+ * Photo Link columns. Balance Remaining and Payment Status are formulas
+ * that calculate themselves — the registrar only ever types into Fee
+ * Amount, Amount Paid, Last Payment Date, and Receipt Photo Link.
+ * Payment info is intentionally NOT shown on the public status.html page
+ * — the reference-code + last-name lookup isn't a strong enough check to
+ * safely expose financial data to anyone who guesses or overhears it.
+ *
+ * SETUP: this is a STANDALONE script (not bound to the Sheet via
+ * Extensions -> Apps Script) — create it fresh at script.google.com/home
+ * while logged into the account that should own it, paste this file in,
+ * then Deploy as a Web App ("Anyone" access) -> copy the resulting URL
+ * into register.html and status.html where marked
+ * REPLACE-WITH-DEPLOYED-SCRIPT-ID. It connects to the Sheet by ID below,
+ * so the deploying account just needs edit access to that Sheet — it
+ * does not need to own it.
+ *
+ * DEPLOYMENT ACCOUNT: this runs under devt.liberia@gmail.com — DEVT's own
+ * institutional account — so registration confirmation emails come
+ * directly from DEVT, not from a Liberia Forward or personal address.
+ * Confirmation emails display as "DEVT Registration System" via the name
+ * option on MailApp.sendEmail below. (Earlier attempts under
+ * ltotimeh@liberiaforward.org and mfoboi@liberiaforward.org appeared to
+ * 404 on their public /exec URLs, but that turned out to be an artifact
+ * of testing them from inside an automated browser session, not a real
+ * problem with any account — always verify a freshly deployed Apps
+ * Script URL from a normal, non-automated browser.)
  */
+
+// The DEVT Registration Tracker Sheet's ID (from its URL). The account
+// deploying this script needs at least edit access to this Sheet.
+const SPREADSHEET_ID = "1U2GxNbM8Mcfn61iKEgy9PVYstC5oXhuoRhG7xDd5vPo";
 
 const SHEET_NAME = "Sheet1";
 const HEADERS = [
   "Reference Code", "Timestamp", "First Name", "Last Name",
   "Phone", "Email", "Program(s) Interested In", "Status", "Notes",
-  "Enrolled in Classroom? (Y/N)"
+  "Enrolled in Classroom? (Y/N)",
+  "Fee Amount", "Amount Paid", "Balance Remaining", "Payment Status",
+  "Last Payment Date", "Receipt Photo Link"
 ];
+// Column letters for the payment columns, used to build formulas below.
+// K = Fee Amount, L = Amount Paid, M = Balance Remaining, N = Payment Status
+const COL_FEE = "K", COL_PAID = "L", COL_BALANCE = "M", COL_PAYSTATUS = "N";
 
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.getSheets()[0];
   // Make sure the header row exists and is correct.
@@ -44,7 +76,8 @@ function getSheet_() {
 function generateReferenceCode_(sheet) {
   // Simple, short, not easily guessable: DEVT- + 4 random digits,
   // re-rolled if it happens to collide with an existing code.
-  const existing = sheet.getRange(2, 1, Math.max(sheet.getLastRow() - 1, 0), 1)
+  const lastRow_ = sheet.getLastRow();
+  const existing = lastRow_ < 2 ? [] : sheet.getRange(2, 1, lastRow_ - 1, 1)
     .getValues().flat().map(String);
   let code;
   do {
@@ -71,6 +104,17 @@ function doPost(e) {
     const sheet = getSheet_();
     const code = generateReferenceCode_(sheet);
     const timestamp = new Date();
+    const newRow = sheet.getLastRow() + 1;
+
+    // Balance Remaining and Payment Status are formulas, not typed-in values —
+    // they recalculate automatically whenever the registrar edits Fee Amount
+    // or Amount Paid. The registrar never has to touch these two columns.
+    const balanceFormula =
+      "=IF(" + COL_PAID + newRow + "=\"\",\"\"," +
+      COL_FEE + newRow + "-" + COL_PAID + newRow + ")";
+    const paymentStatusFormula =
+      "=IF(" + COL_PAID + newRow + "=\"\",\"Unpaid\"," +
+      "IF(" + COL_PAID + newRow + ">=" + COL_FEE + newRow + ",\"Paid in Full\",\"Partially Paid\"))";
 
     sheet.appendRow([
       code,
@@ -82,13 +126,22 @@ function doPost(e) {
       body.program,
       "Received",
       body.notes || "",
-      "N"
+      "N",
+      "",                    // Fee Amount — registrar fills this in based on the program's cost
+      "",                    // Amount Paid — registrar fills this in as payments come in
+      balanceFormula,        // Balance Remaining — calculates itself
+      paymentStatusFormula,  // Payment Status — calculates itself
+      "",                    // Last Payment Date — registrar fills this in
+      ""                     // Receipt Photo Link — paste the Drive link to the receipt photo
     ]);
 
     if (body.email) {
       try {
         MailApp.sendEmail({
           to: body.email,
+          cc: "devt.liberia@gmail.com",
+          replyTo: "devt.liberia@gmail.com",
+          name: "DEVT Registration System",
           subject: "Your DEVT application — reference code " + code,
           body:
             "Hi " + body.firstName + ",\n\n" +
